@@ -185,6 +185,10 @@ def clone_caption(xml, template_cap, next_id):
         s = blk
         for o, n in idmap.items():
             s = s.replace(f'ObjectID="{o}"', f'ObjectID="{n}"').replace(f'ObjectRef="{o}"', f'ObjectRef="{n}"')
+        # duplicate <ClipID> GUIDs = "project appears to be damaged" in newer
+        # Premiere; give clones fresh clip identity like Premiere itself would
+        s = re.sub(r'<ClipID>([0-9a-f-]{36})</ClipID>',
+                   lambda m: '<ClipID>' + fab_hash((m.group(1) + ':' + idmap[oid]).encode()) + '</ClipID>', s)
         blocks.append(s)
     ins = xml.rindex('</VideoClipTrackItem>') + len('</VideoClipTrackItem>')
     xml = xml[:ins] + '\n\t' + '\n\t'.join(blocks) + xml[ins:]
