@@ -5,3 +5,4 @@ __pycache__/
 *_proxy.mp4
 *.wav
 *.xml.out
+tests/_scratch/
