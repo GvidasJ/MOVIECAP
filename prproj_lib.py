@@ -133,6 +133,9 @@ def apply_style(xml, cap, donor_params, motion_xml, vm_xml, next_id):
     mroot = re.search(r'ObjectID="(\d+)"', motion_xml).group(1)
     vroot = re.search(r'ObjectID="(\d+)"', vm_xml).group(1)
     olds = [mroot] + re.findall(r'ObjectRef="(\d+)"', motion_xml) + [vroot] + re.findall(r'ObjectRef="(\d+)"', vm_xml)
+    # fresh ids must clear the donor's own id range, or the sequential replace
+    # in cl() corrupts the clone once next_id walks into it
+    next_id[0] = max(next_id[0], max(int(o) for o in olds) + 1)
     idmap = {o: str(next_id[0]+i) for i, o in enumerate(olds)}; next_id[0] += len(idmap)
     def cl(s):
         for o, n in idmap.items():

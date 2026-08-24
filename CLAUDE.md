@@ -81,6 +81,9 @@ x42 y555 w998 h1037. Zoom taste = displayed height ~= window height + 7px
 
 ## CAPTION TEXT RULES (user's style)
 - Short chunks 1-4 words, first letter capitalized, strip . and , keep ? ! '
+- The 1-4 word rule OVERRIDES reference chunking (user correction): a 5-word
+  reference line rendered truncated ("Does not mean it's[ stolen]") — the text
+  box clips long lines at Verdana-Bold 58. Re-chunk; keep chunks <= ~19 chars.
 - Never end a caption on a be-verb (am/is/are/was/were/be) OR an article
   (a/an/the) — move the article to the FRONT of the next caption (user writes
   it lowercase: "a R*tardation?") or merge.
