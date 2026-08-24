@@ -114,10 +114,13 @@ def cover_scale(src_h): return round((WINDOW['h'] + 7) / src_h * 100, 1)  # user
 
 def fcp7_xml(clips, src_name, src_w, src_h, template_png, seq_name, total_frames):
     """Emit importable XML. clips: [{tl_in,tl_out,b_in,b_out,px}] frames @ 25fps.
-    timebase 25 ntsc FALSE is the ONLY structure with verified working audio import."""
+    Optional per-clip 'scale' and 'py' override the full-height defaults (recovered
+    tighter framings need them). timebase 25 ntsc FALSE is the ONLY structure with
+    verified working audio import."""
     SCALE = cover_scale(src_h); PYc = 1073.5
     vit, ait = [], []
     for i, c in enumerate(clips):
+        sc, pyc = c.get('scale', SCALE), c.get('py', PYc)
         fr = (f'<file id="fileB"><name>{src_name}</name><pathurl>file://localhost/{src_name}</pathurl>'
               f'<rate><timebase>25</timebase><ntsc>FALSE</ntsc></rate><media><video><samplecharacteristics>'
               f'<width>{src_w}</width><height>{src_h}</height></samplecharacteristics></video>'
@@ -125,9 +128,9 @@ def fcp7_xml(clips, src_name, src_w, src_h, template_png, seq_name, total_frames
         mo = (f'<filter><effect><name>Basic Motion</name><effectid>basic</effectid><effectcategory>motion</effectcategory>'
               f'<effecttype>motion</effecttype><mediatype>video</mediatype>'
               f'<parameter authoringApp="PremierePro"><parameterid>scale</parameterid><name>Scale</name>'
-              f'<valuemin>0</valuemin><valuemax>1000</valuemax><value>{SCALE}</value></parameter>'
+              f'<valuemin>0</valuemin><valuemax>1000</valuemax><value>{sc}</value></parameter>'
               f'<parameter authoringApp="PremierePro"><parameterid>center</parameterid><name>Center</name>'
-              f'<value><horiz>{(c["px"]-540)/1080.0:.4f}</horiz><vert>{(PYc-960)/1920.0:.4f}</vert></value></parameter>'
+              f'<value><horiz>{(c["px"]-540)/1080.0:.4f}</horiz><vert>{(pyc-960)/1920.0:.4f}</vert></value></parameter>'
               f'</effect></filter>')
         base = (f'<name>B shot {i+1}</name><enabled>TRUE</enabled><rate><timebase>25</timebase><ntsc>FALSE</ntsc></rate>'
                 f'<start>{c["tl_in"]}</start><end>{c["tl_out"]}</end><in>{c["b_in"]}</in><out>{c["b_out"]}</out>')
