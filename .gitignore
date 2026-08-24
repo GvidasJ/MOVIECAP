@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+
+# Generated working files (proxies, extracted audio, emitted projects)
+*_proxy.mp4
+*.wav
+*.xml.out
