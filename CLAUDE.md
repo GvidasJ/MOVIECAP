@@ -49,6 +49,12 @@ file surgery. Built and proven across 3 complete scenes with the user
 - Merging captions: extend End + OutPoint by delta, delete the absorbed item.
 
 ## CRITICAL PITFALLS
+- Whole-clip cloning is proven ONLY on old-format projects. On new-format
+  projects (Block/FormattedTextData sidecars per caption, TranscriptClip)
+  cloned track items = "project appears to be damaged" even with fresh unique
+  ClipIDs (tried twice). Don't clone there: have Premiere create the items
+  (delete captions -> import corrected SRT -> upgrade to graphics -> Save As)
+  and patch ONLY text/style/time on native items — that path opens.
 - PATCH ONLY CLEAN BASES. A file that went through user-edit + Premiere re-save
   containing NEW-format text blobs became unpatchable ("project appears to be
   damaged") by every method incl. pure byte surgery; identical operations on the
