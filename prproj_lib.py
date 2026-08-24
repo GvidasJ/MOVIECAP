@@ -1,10 +1,11 @@
 """Proven .prproj surgery library. All operations verified in production across 3 scenes.
 GOLDEN RULE: only patch clean bases (pre-user-edit). Rebuild rather than patch re-saves."""
-import gzip, re, base64, struct, hashlib, pickle, io, zlib
+import gzip, re, base64, struct, hashlib, pickle, io, os, zlib
 import xml.etree.ElementTree as ET
 
 TICKS = 254016000000
 POP_DELTA = 63567504000  # 6-frame pop duration in ticks
+ASSETS = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets')
 
 def load(path):
     """-> (xml_string, ET_root, by_id, by_uid, deref). by_id maps to LISTS (IDs collide)."""
@@ -39,7 +40,7 @@ def save_like(reference_prproj_bytes, xml_bytes, path):
     open(path, 'wb').write(out)
 
 # ---- text blobs -------------------------------------------------------------
-STYLE_BODY = pickle.load(open(__file__.rsplit('/',1)[0] + '/assets/style_body.pkl','rb'))
+STYLE_BODY = pickle.load(open(os.path.join(ASSETS, 'style_body.pkl'),'rb'))
 
 def make_blob(text, body=None):
     body = body or STYLE_BODY
@@ -127,7 +128,7 @@ def retime(xml, cap, a_sec, b_sec):
 
 def apply_style(xml, cap, donor_params, motion_xml, vm_xml, next_id):
     """Clone Motion+VM (pop keyframes rebased to cap's InPoint), rewire chain, copy Text params."""
-    dparams = pickle.load(open(__file__.rsplit('/',1)[0] + '/assets/donor_params.pkl','rb')) if donor_params is None else donor_params
+    dparams = pickle.load(open(os.path.join(ASSETS, 'donor_params.pkl'),'rb')) if donor_params is None else donor_params
     T0, T1 = dparams['pop_t0'], dparams['pop_t1']
     mroot = re.search(r'ObjectID="(\d+)"', motion_xml).group(1)
     vroot = re.search(r'ObjectID="(\d+)"', vm_xml).group(1)
