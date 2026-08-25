@@ -66,6 +66,11 @@ file surgery. Built and proven across 3 complete scenes with the user
   damaged") by every method incl. pure byte surgery; identical operations on the
   pre-edit base always open. Rebuild on the clean base with user values instead.
 - Premiere re-save renumbers ObjectIDs; never reuse IDs across saves.
+- Donor components harvested from a RE-SAVED project are hollow: Premiere
+  serializes their params as separate top-level objects, so cloning the block
+  alone leaves dangling ObjectRefs ("could not be loaded... outdated elements").
+  Harvest the full ObjectRef closure (apply_style now asserts self-contained
+  donors); repo assets/donor_*.xml are inline and safe.
 - "File Import Failure" dialog = they IMPORTED the prproj; direct File > Open is
   the correct path and is more tolerant.
 - Retyped-in-new-Premiere text blobs are unreadable by the length-tail scanner;

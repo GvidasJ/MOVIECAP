@@ -133,6 +133,12 @@ def apply_style(xml, cap, donor_params, motion_xml, vm_xml, next_id):
     mroot = re.search(r'ObjectID="(\d+)"', motion_xml).group(1)
     vroot = re.search(r'ObjectID="(\d+)"', vm_xml).group(1)
     olds = [mroot] + re.findall(r'ObjectRef="(\d+)"', motion_xml) + [vroot] + re.findall(r'ObjectRef="(\d+)"', vm_xml)
+    # donors must be SELF-CONTAINED: a component harvested from a re-saved
+    # project references params serialized as separate objects — cloning it
+    # alone leaves dangling refs ("damaged or outdated elements")
+    for blob in (motion_xml, vm_xml):
+        for r in set(re.findall(r'ObjectRef="(\d+)"', blob)):
+            assert re.search(rf'ObjectID="{r}"[ >]', blob), f'donor not self-contained: ref {r} unresolved'
     # fresh ids must clear the donor's own id range, or the sequential replace
     # in cl() corrupts the clone once next_id walks into it
     next_id[0] = max(next_id[0], max(int(o) for o in olds) + 1)
