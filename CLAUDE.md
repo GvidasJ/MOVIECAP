@@ -35,6 +35,12 @@ file surgery. Built and proven across 3 complete scenes with the user
   stores only G=0xCE @~732; R=255,B=0 are schema defaults). Body is invariant
   across texts; splice is byte-exact (assets/style_body.pkl).
   BinaryHash attr: md5-as-GUID fabrication is accepted.
+  Fill color: TWO 3-slot FlatBuffers color tables in the body tail — G at 732
+  and 750, B stored EXPLICITLY (0x00) at 733 and 751, R absent (default 255).
+  White = FF at all four (assets/style_body_white.pkl). No-pop style: empty the
+  donor Motion Scale <Keyframes> (Start/CurrentValue are already static 100).
+  SRT-imported duplicate texts: Premiere dedups blobs — later copies have a
+  self-closing empty StartKeyframeValue (hash ref only); set_text handles them.
 - Pop animation: Motion Scale keyframes `tick,value,0,0,0,0.1667,47.952,0.1667;
   tick+63567504000,value2,5,0,47.952,0.1667,0,0.3333;` — ticks are MEDIA time
   (rebase to each clip's InPoint; graphics zero is per-project, e.g.
